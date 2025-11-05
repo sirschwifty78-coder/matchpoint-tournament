@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MatchPoint - Champion!</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .winner-page {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+            color: #333;
+        }
+        
+        .winner-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            max-width: 800px;
+            border: 5px solid gold;
+        }
+        
+        .trophy {
+            font-size: 4em;
+            margin-bottom: 5px;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        .champion-name {
+            font-size: 2.2em;
+            margin: 5px 0 15px 0;
+            color: #d4af37;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Compact Tournament Summary */
+        .tournament-stats {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: left;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 0.95em;
+        }
+        
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+        
+        .seeding-info {
+            background: #e7f3ff;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-top: 12px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .seeding-info h4 {
+            margin: 0 0 8px 0;
+            color: #007bff;
+            font-size: 1em;
+        }
+        
+        .performance {
+            padding: 8px 10px;
+            border-radius: 5px;
+            margin: 5px 0;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+        
+        .performance.top-seed {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+        
+        .performance.high-seed {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+        }
+        
+        .performance.mid-seed {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .performance.upset {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+        
+        /* Match Results */
+        .match-results {
+            background: #f8f9fa;
+            padding: 18px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .match-results h4 {
+            margin: 0 0 12px 0;
+            color: #495057;
+        }
+        
+        .match-result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 0.9em;
+        }
+        
+        .match-result-item:last-child {
+            border-bottom: none;
+        }
+        
+        /* Report Section */
+        .report-section {
+            background: #e7f3ff;
+            border: 2px dashed #007bff;
+            padding: 18px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .report-section h3 {
+            color: #007bff;
+            margin: 0 0 12px 0;
+            font-size: 1.2em;
+        }
+        
+        .report-section p {
+            margin: 0 0 15px 0;
+            color: #495057;
+        }
+        
+        .report-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .report-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9em;
+        }
+        
+        .btn-pdf {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-share {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-print {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .report-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .cta-button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95em;
+        }
+        
+        .secondary {
+            background: #6c757d;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95em;
+        }
+        
+        .cta-button:hover, .secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: #ff0000;
+            opacity: 0;
+        }
+        
+        /* Tournament Report */
+        .tournament-report {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 15px;
+            display: none;
+            text-align: left;
+        }
+        
+        .report-header {
+            text-align: center;
+            border-bottom: 3px solid #d4af37;
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .report-title {
+            font-size: 1.8em;
+            color: #d4af37;
+            margin: 0;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .final-match {
+            background: #fff3cd;
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 4px solid #ffc107;
+            margin: 15px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .winner-card {
+                padding: 20px 15px;
+                margin: 15px;
+            }
+            
+            .trophy {
+                font-size: 3em;
+            }
+            
+            .champion-name {
+                font-size: 1.8em;
+            }
+            
+            .results-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .report-actions, .action-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+            }
+            
+            .report-btn, .cta-button, .secondary {
+                width: 100%;
+                justify-content: center;
+                padding: 10px 15px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .winner-page {
+                padding: 10px;
+            }
+            
+            .winner-card {
+                padding: 15px 10px;
+            }
+            
+            .tournament-stats,
+            .match-results,
+            .report-section {
+                padding: 15px;
+            }
+            
+            .stat-item,
+            .match-result-item {
+                font-size: 0.85em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="winner-page">
+        <div class="winner-card">
+            <div class="trophy">🏆</div>
+            <h1>Tournament Champion!</h1>
+            <div class="champion-name" id="champion-name">Loading...</div>
+            
+            <div class="tournament-stats">
+                <h3>Tournament Summary</h3>
+                <div class="stats-grid">
+                    <div>
+                        <div class="stat-item">
+                            <span>Total Players:</span>
+                            <span id="total-players">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Tournament Date:</span>
+                            <span id="tournament-date">Today</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Rounds Played:</span>
+                            <span id="rounds-played">0</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="stat-item">
+                            <span>Tournament Format:</span>
+                            <span id="tournament-format">Single Elimination</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Final Match Score:</span>
+                            <span id="final-score">-</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="seeding-info" id="seeding-info" style="display: none;">
+                    <h4>🎯 Seeding Performance</h4>
+                    <div id="seeding-details"></div>
+                </div>
+            </div>
+
+            <!-- Match Results Section -->
+            <div class="match-results" id="match-results" style="display: none;">
+                <h4>📊 Match Results</h4>
+                <div id="match-results-list"></div>
+            </div>
+            
+            <div class="report-section">
+                <h3>📊 Tournament Report</h3>
+                <p>Generate an official report of the tournament results:</p>
+                
+                <div class="report-actions">
+                    <button class="report-btn btn-pdf" onclick="generatePDFReport()">
+                        📄 PDF Report
+                    </button>
+                    <button class="report-btn btn-print" onclick="printReport()">
+                        🖨️ Print
+                    </button>
+                    <button class="report-btn btn-share" onclick="shareResults()">
+                        📤 Share
+                    </button>
+                </div>
+            </div>
+
+            <!-- Report Preview -->
+            <div class="tournament-report" id="tournament-report">
+                <div class="report-header">
+                    <h2 class="report-title">MATCHPOINT TOURNAMENT REPORT</h2>
+                    <div class="report-subtitle" id="report-subtitle">Official Tournament Results</div>
+                </div>
+                
+                <div class="results-grid">
+                    <div>
+                        <h4>🏆 Final Results</h4>
+                        <div class="stat-item">
+                            <strong>Champion:</strong>
+                            <span id="report-champion">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <strong>Runner-up:</strong>
+                            <span id="report-runnerup">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <strong>Tournament Date:</strong>
+                            <span id="report-date">-</span>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4>📈 Tournament Stats</h4>
+                        <div class="stat-item">
+                            <strong>Total Players:</strong>
+                            <span id="report-total-players">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <strong>Rounds Played:</strong>
+                            <span id="report-rounds">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <strong>Format:</strong>
+                            <span id="report-format">-</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="final-match">
+                    <h4>🎯 Championship Match</h4>
+                    <div id="championship-details">Final match details will appear here</div>
+                </div>
+
+                <div class="match-results">
+                    <h4>📋 All Match Results</h4>
+                    <div id="report-match-results"></div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 15px; color: #666; font-size: 0.85em;">
+                    Generated by MatchPoint Tournament System
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button onclick="location.href='index.html'" class="cta-button">
+                    🏆 New Tournament
+                </button>
+                <button onclick="location.href='bracket.html'" class="secondary">
+                    📊 View Bracket
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let tournamentData = {};
+        let seededPlayers = [];
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const winnerData = sessionStorage.getItem('tournamentWinner');
+            const playersData = sessionStorage.getItem('tournamentPlayers');
+            const seedingType = sessionStorage.getItem('seedingType') || 'order';
+            
+            if (winnerData) {
+                try {
+                    const data = JSON.parse(winnerData);
+                    tournamentData = data;
+                    
+                    // Generate seeded players from original player list
+                    if (playersData) {
+                        const playerNames = JSON.parse(playersData);
+                        seededPlayers = generateSeededPlayers(playerNames, seedingType);
+                    } else {
+                        // Fallback: use players from winner data
+                        seededPlayers = data.allPlayers || [];
+                    }
+                    
+                    displayWinnerInformation(data);
+                    updateSeedingPerformance(data);
+                    displayMatchResults(data);
+                    updateReportPreview(data);
+                    
+                    startCelebration();
+                } catch (error) {
+                    console.error("Error loading winner data:", error);
+                    showError("Error loading tournament results. Please try again.");
+                }
+            } else {
+                alert('No tournament results found. Redirecting to bracket.');
+                location.href = 'bracket.html';
+            }
+        });
+        
+        function generateSeededPlayers(playerNames, seedingType) {
+            if (seedingType === 'order') {
+                return playerNames.map((name, index) => ({
+                    name: name.trim(),
+                    seed: index + 1
+                }));
+            } else {
+                return playerNames.map(player => {
+                    const seedMatch = player.match(/#(\d+)$/);
+                    const name = seedMatch ? player.replace(/#\d+$/, '').trim() : player.trim();
+                    const seed = seedMatch ? parseInt(seedMatch[1]) : playerNames.length;
+                    
+                    return { name, seed };
+                }).sort((a, b) => a.seed - b.seed);
+            }
+        }
+        
+        function displayWinnerInformation(data) {
+            document.getElementById('champion-name').textContent = data.winner.name;
+            document.getElementById('total-players').textContent = data.totalPlayers;
+            document.getElementById('tournament-date').textContent = new Date(data.winDate).toLocaleDateString();
+            document.getElementById('rounds-played').textContent = data.totalRounds;
+            document.getElementById('tournament-format').textContent = getTournamentFormat(data.totalPlayers, data.bracketStructure);
+            document.getElementById('final-score').textContent = data.finalScore;
+        }
+        
+        function updateSeedingPerformance(data) {
+            const winnerSeed = data.winner.seed;
+            const seedingInfo = document.getElementById('seeding-info');
+            const seedingDetails = document.getElementById('seeding-details');
+            
+            if (winnerSeed) {
+                seedingInfo.style.display = 'block';
+                
+                let performance = '';
+                let performanceClass = '';
+                
+                if (winnerSeed === 1) {
+                    performance = '🥇 Top seed delivered as expected!';
+                    performanceClass = 'top-seed';
+                } else if (winnerSeed <= 3) {
+                    performance = '🎯 High seed performed excellently!';
+                    performanceClass = 'high-seed';
+                } else if (winnerSeed <= 8) {
+                    performance = '⚡ Solid performance from a mid-tier seed!';
+                    performanceClass = 'mid-seed';
+                } else {
+                    performance = '🎊 Amazing upset victory!';
+                    performanceClass = 'upset';
+                }
+                
+                seedingDetails.innerHTML = `
+                    <div class="performance ${performanceClass}">
+                        <strong>${data.winner.name}</strong> entered as <strong>Seed ${winnerSeed}</strong><br>
+                        ${performance}
+                    </div>
+                `;
+            }
+        }
+        
+        function displayMatchResults(data) {
+            const matchResultsSection = document.getElementById('match-results');
+            const matchResultsList = document.getElementById('match-results-list');
+            
+            if (data.matchResults && data.matchResults.length > 0) {
+                matchResultsSection.style.display = 'block';
+                
+                let resultsHTML = '';
+                
+                // Group by round
+                const rounds = {};
+                data.matchResults.forEach(match => {
+                    if (!rounds[match.roundName]) {
+                        rounds[match.roundName] = [];
+                    }
+                    rounds[match.roundName].push(match);
+                });
+                
+                // Display rounds in order
+                Object.keys(rounds).sort((a, b) => {
+                    const roundOrder = ['Final', 'Semi-Finals', 'Quarter-Finals', 'Round of 16', 'Round of 32'];
+                    return roundOrder.indexOf(a) - roundOrder.indexOf(b);
+                }).forEach(roundName => {
+                    resultsHTML += `<h5 style="margin: 12px 0 8px 0; color: #495057;">${roundName}</h5>`;
+                    rounds[roundName].forEach(match => {
+                        resultsHTML += `
+                            <div class="match-result-item">
+                                <span>
+                                    <strong>${match.winner}</strong> (Seed ${match.winnerSeed}) 
+                                    vs ${match.loser} (Seed ${match.loserSeed})
+                                </span>
+                                <span><strong>${match.score}</strong></span>
+                            </div>
+                        `;
+                    });
+                });
+                
+                matchResultsList.innerHTML = resultsHTML;
+            }
+        }
+        
+        function getTournamentFormat(playerCount, bracketStructure) {
+            if (!bracketStructure) {
+                if (playerCount <= 2) return "Final";
+                if (playerCount <= 4) return "Semi-Finals";
+                if (playerCount <= 8) return "Quarter-Finals";
+                return "Single Elimination";
+            }
+            
+            if (bracketStructure.totalBYEs > 0) {
+                return `Single Elimination (${bracketStructure.totalBYEs} BYEs)`;
+            }
+            if (playerCount <= 2) return 'Final';
+            if (playerCount <= 4) return 'Semi-Finals';
+            if (playerCount <= 8) return 'Quarter-Finals';
+            if (playerCount <= 16) return 'Round of 16';
+            return 'Single Elimination';
+        }
+        
+        function updateReportPreview(data) {
+            document.getElementById('report-champion').textContent = data.winner.name;
+            document.getElementById('report-runnerup').textContent = data.runnerUp.name;
+            document.getElementById('report-date').textContent = new Date(data.winDate).toLocaleDateString();
+            document.getElementById('report-total-players').textContent = data.totalPlayers;
+            document.getElementById('report-rounds').textContent = data.totalRounds;
+            document.getElementById('report-format').textContent = getTournamentFormat(data.totalPlayers, data.bracketStructure);
+            document.getElementById('report-subtitle').textContent = `${getTournamentFormat(data.totalPlayers, data.bracketStructure)} Tournament - ${new Date(data.winDate).toLocaleDateString()}`;
+            
+            // Championship details
+            const championshipDetails = `
+                <strong>${data.winner.name}</strong> (Seed ${data.winner.seed}) vs <strong>${data.runnerUp.name}</strong> (Seed ${data.runnerUp.seed})<br>
+                Final Score: ${data.finalScore}<br>
+                ${data.scoringType === 'sets' && data.championshipMatch.sets && data.championshipMatch.sets.length > 0 ? 
+                    `Sets: ${data.championshipMatch.sets.map(set => `${set.player1}-${set.player2}`).join(', ')}` : 
+                    ''}
+            `;
+            document.getElementById('championship-details').innerHTML = championshipDetails;
+            
+            // Match results for report
+            const reportMatchResults = document.getElementById('report-match-results');
+            if (data.matchResults && data.matchResults.length > 0) {
+                let reportResultsHTML = '';
+                
+                const rounds = {};
+                data.matchResults.forEach(match => {
+                    if (!rounds[match.roundName]) {
+                        rounds[match.roundName] = [];
+                    }
+                    rounds[match.roundName].push(match);
+                });
+                
+                Object.keys(rounds).sort((a, b) => {
+                    const roundOrder = ['Final', 'Semi-Finals', 'Quarter-Finals', 'Round of 16', 'Round of 32'];
+                    return roundOrder.indexOf(a) - roundOrder.indexOf(b);
+                }).forEach(roundName => {
+                    reportResultsHTML += `<h5 style="margin: 12px 0 8px 0; color: #495057;">${roundName}</h5>`;
+                    rounds[roundName].forEach(match => {
+                        reportResultsHTML += `
+                            <div class="match-result-item">
+                                <span>${match.winner} (Seed ${match.winnerSeed}) def. ${match.loser} (Seed ${match.loserSeed})</span>
+                                <span><strong>${match.score}</strong></span>
+                            </div>
+                        `;
+                    });
+                });
+                
+                reportMatchResults.innerHTML = reportResultsHTML;
+            } else {
+                reportMatchResults.innerHTML = '<p>No match results available.</p>';
+            }
+        }
+        
+        function showError(message) {
+            const winnerCard = document.querySelector('.winner-card');
+            winnerCard.innerHTML = `
+                <div style="text-align: center; color: #dc3545; padding: 30px;">
+                    <div style="font-size: 2.5em;">⚠️</div>
+                    <h3>${message}</h3>
+                    <button onclick="location.href='bracket.html'" style="margin-top: 15px; padding: 8px 16px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                        Return to Bracket
+                    </button>
+                </div>
+            `;
+        }
+        
+        function generatePDFReport() {
+            const report = document.getElementById('tournament-report');
+            report.style.display = 'block';
+            report.scrollIntoView({ behavior: 'smooth' });
+            
+            setTimeout(() => {
+                alert('PDF generation would be implemented here with a library like jsPDF. For now, use the Print Report button.');
+            }, 500);
+        }
+        
+        function printReport() {
+            const report = document.getElementById('tournament-report');
+            report.style.display = 'block';
+            
+            setTimeout(() => {
+                const printContent = report.innerHTML;
+                const originalContent = document.body.innerHTML;
+                
+                document.body.innerHTML = `
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>MatchPoint Tournament Report</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; padding: 15px; line-height: 1.4; }
+                            .tournament-report { max-width: 100%; }
+                            .report-title { color: #d4af37; margin-bottom: 10px; }
+                            .stat-item { display: flex; justify-content: space-between; margin: 6px 0; }
+                            .final-match { background: #fff3cd; padding: 10px; margin: 12px 0; }
+                            .match-result-item { display: flex; justify-content: space-between; padding: 4px 0; }
+                            @media print {
+                                .action-buttons { display: none; }
+                                body { font-size: 12px; }
+                            }
+                        </style>
+                    </head>
+                    <body>${printContent}</body>
+                    </html>
+                `;
+                window.print();
+                document.body.innerHTML = originalContent;
+                location.reload();
+            }, 500);
+        }
+        
+        function shareResults() {
+            const champion = document.getElementById('champion-name').textContent;
+            const totalPlayers = document.getElementById('total-players').textContent;
+            const finalScore = document.getElementById('final-score').textContent;
+            const shareText = `🏆 ${champion} won the MatchPoint tournament with ${totalPlayers} players! Final score: ${finalScore}. Check out MatchPoint for professional tournament management.`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Tournament Results',
+                    text: shareText,
+                    url: window.location.href
+                });
+            } else {
+                navigator.clipboard.writeText(shareText).then(() => {
+                    alert('Results copied to clipboard!');
+                });
+            }
+        }
+        
+        function startCelebration() {
+            for (let i = 0; i < 40; i++) {
+                setTimeout(() => createConfetti(), i * 80);
+            }
+        }
+        
+        function createConfetti() {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.background = getRandomColor();
+            confetti.style.animation = `fall ${Math.random() * 2 + 1.5}s linear forwards`;
+            document.body.appendChild(confetti);
+            
+            setTimeout(() => confetti.remove(), 4000);
+        }
+        
+        function getRandomColor() {
+            const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ff8c00', '#ff69b4'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+        
+        // Add CSS for confetti animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fall {
+                0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+                100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        window.generatePDFReport = generatePDFReport;
+        window.printReport = printReport;
+        window.shareResults = shareResults;
+    </script>
+</body>
+</html>

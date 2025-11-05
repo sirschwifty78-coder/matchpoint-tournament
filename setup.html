@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MatchPoint - Setup</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Setup page specific styles */
+        .setup-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .setup-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 700px;
+            width: 100%;
+        }
+        
+        .setup-card h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.2em;
+        }
+        
+        .setup-description {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .input-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            border: 2px dashed #dee2e6;
+        }
+        
+        .input-section h3 {
+            color: #495057;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+        
+        .input-section p {
+            color: #6c757d;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1em;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .setup-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        /* Button Styles */
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        
+        button.primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        button.secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .player-count {
+            text-align: center;
+            margin-top: 15px;
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+        
+        .setup-tips {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .setup-tips h4 {
+            color: #0066cc;
+            margin-bottom: 10px;
+        }
+        
+        .setup-tips ul {
+            margin: 0;
+            padding-left: 20px;
+            color: #666;
+        }
+        
+        .setup-tips li {
+            margin-bottom: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .setup-container {
+                padding: 10px;
+            }
+            
+            .setup-card {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+            
+            .setup-card h1 {
+                font-size: 1.8em;
+            }
+            
+            .input-section {
+                padding: 20px 15px;
+            }
+            
+            .setup-actions {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-container">
+        <div class="setup-card">
+            <h1>Tournament Setup</h1>
+            <p class="setup-description">Enter the players for your tournament below:</p>
+            
+            <div class="input-section">
+                <h3>Player Names</h3>
+                <p>Enter one player per line. The system will automatically seed the bracket.</p>
+                <textarea id="player-names" placeholder="e.g.,&#10;Player 1&#10;Player 2&#10;Player 3&#10;Player 4"></textarea>
+                <div class="player-count" id="player-count">0 players entered</div>
+                
+                <div class="setup-tips">
+                    <h4>💡 Tips for best results:</h4>
+                    <ul>
+                        <li>Enter 2, 4, 8, 16, or 32 players for perfect brackets</li>
+                        <li>Odd numbers will create BYE matches</li>
+                        <li>You can review and edit players before generating the bracket</li>
+                    </ul>
+                </div>
+                
+                <div class="setup-actions">
+                    <button onclick="location.href='index.html'" class="secondary">
+                        ← Back to Home
+                    </button>
+                    <button id="generate-bracket-btn" class="primary">
+                        Review Players →
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const playerTextarea = document.getElementById('player-names');
+            const playerCount = document.getElementById('player-count');
+            const generateBtn = document.getElementById('generate-bracket-btn');
+            
+            // Update player count in real-time
+            playerTextarea.addEventListener('input', function() {
+                const players = this.value.split('\n').filter(name => name.trim() !== '');
+                const count = players.length;
+                playerCount.textContent = `${count} player${count !== 1 ? 's' : ''} entered`;
+                
+                // Update button text based on player count
+                if (count >= 2) {
+                    generateBtn.textContent = `Review ${count} Players →`;
+                } else {
+                    generateBtn.textContent = 'Review Players →';
+                }
+            });
+            
+            // Generate bracket button functionality
+            generateBtn.addEventListener('click', function() {
+                const inputText = playerTextarea.value;
+                const players = inputText.split('\n').filter(name => name.trim() !== '');
+                
+                if (players.length < 2) {
+                    alert("Please enter at least 2 players!");
+                    return;
+                }
+                
+                // Store players in sessionStorage for the players review page
+                sessionStorage.setItem('tournamentPlayers', JSON.stringify(players));
+                
+                // Redirect to players review page
+                location.href = 'players.html';
+            });
+            
+            // Load any previously entered players
+            const savedPlayers = sessionStorage.getItem('tournamentPlayers');
+            if (savedPlayers) {
+                const players = JSON.parse(savedPlayers);
+                playerTextarea.value = players.join('\n');
+                
+                // Trigger input event to update count
+                const event = new Event('input');
+                playerTextarea.dispatchEvent(event);
+            }
+            
+            // Add some sample players if empty (for demo purposes)
+            if (!savedPlayers && playerTextarea.value.trim() === '') {
+                const samplePlayers = ['Player 1', 'Player 2', 'Player 3', 'Player 4'];
+                playerTextarea.value = samplePlayers.join('\n');
+                
+                // Trigger input event to update count
+                const event = new Event('input');
+                playerTextarea.dispatchEvent(event);
+            }
+        });
+    </script>
+</body>
+</html>

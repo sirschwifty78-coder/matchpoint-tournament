@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MatchPoint - Player Review</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .players-page {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .players-container {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 700px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .success-header {
+            background: #d4edda;
+            color: #155724;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 4px solid #28a745;
+        }
+        
+        .success-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+        
+        .players-list {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 25px 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .player-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid #e9ecef;
+            background: white;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .player-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .player-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .player-seed {
+            background: #007bff;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .player-name {
+            flex: 1;
+            text-align: left;
+            padding: 0 15px;
+            font-weight: 500;
+        }
+        
+        .player-seed-badge {
+            background: #6c757d;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        .tournament-info {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .info-item {
+            text-align: center;
+        }
+        
+        .info-label {
+            font-size: 0.8em;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #495057;
+        }
+        
+        .bracket-preview {
+            background: #fff3cd;
+            border: 2px dashed #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            color: #856404;
+            text-align: left;
+        }
+        
+        .bracket-structure {
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 5px;
+            border-left: 4px solid #28a745;
+        }
+        
+        .bye-info {
+            color: #dc3545;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .seeding-advantage {
+            color: #007bff;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-edit {
+            background: #6c757d;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .btn-generate {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .btn-edit:hover, .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        @media (max-width: 768px) {
+            .players-container {
+                margin: 20px;
+                padding: 30px 20px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .player-item {
+                padding: 10px 12px;
+            }
+            
+            .tournament-info {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="players-page">
+        <div class="players-container">
+            <div class="success-header">
+                <div class="success-icon">✅</div>
+                <h2>Players Registered Successfully!</h2>
+                <p>Review your tournament players and bracket structure</p>
+            </div>
+            
+            <div class="players-list" id="players-list">
+                <!-- Players will be loaded here by JavaScript -->
+                <div class="loading-message">Loading players...</div>
+            </div>
+            
+            <div class="tournament-info">
+                <div class="info-item">
+                    <div class="info-label">Total Players</div>
+                    <div class="info-value" id="total-players">0</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Bracket Type</div>
+                    <div class="info-value" id="bracket-type">Single Elimination</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Total Rounds</div>
+                    <div class="info-value" id="total-rounds">-</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">BYE Slots</div>
+                    <div class="info-value" id="bye-slots">0</div>
+                </div>
+            </div>
+            
+            <div class="bracket-preview" id="bracket-preview">
+                <!-- Bracket preview will be generated here -->
+            </div>
+            
+            <div class="action-buttons">
+                <button onclick="location.href='setup.html'" class="btn-edit">
+                    ← Edit Players
+                </button>
+                <button onclick="generateBracket()" class="btn-generate">
+                    Generate Bracket →
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load and display players when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPlayers();
+        });
+        
+        function loadPlayers() {
+            const savedPlayers = sessionStorage.getItem('tournamentPlayers');
+            const seedingType = sessionStorage.getItem('seedingType') || 'order';
+            
+            if (savedPlayers) {
+                try {
+                    const players = JSON.parse(savedPlayers);
+                    const seededPlayers = generateSeededPlayers(players, seedingType);
+                    displayPlayers(seededPlayers);
+                    updateTournamentInfo(seededPlayers);
+                } catch (error) {
+                    console.error("Error loading players:", error);
+                    showError("Error loading player data. Please go back and try again.");
+                }
+            } else {
+                showError("No players found. Please set up the tournament first.");
+                setTimeout(() => location.href = 'setup.html', 2000);
+            }
+        }
+        
+        function generateSeededPlayers(players, seedingType) {
+            if (seedingType === 'order') {
+                // Order-based: first player = seed 1, second = seed 2, etc.
+                return players.map((name, index) => ({
+                    name: name.trim(),
+                    seed: index + 1,
+                    originalName: name.trim()
+                }));
+            } else {
+                // Manual seeding: parse seed numbers from names
+                return players.map(player => {
+                    const seedMatch = player.match(/#(\d+)$/);
+                    const name = seedMatch ? player.replace(/#\d+$/, '').trim() : player.trim();
+                    const seed = seedMatch ? parseInt(seedMatch[1]) : players.length;
+                    
+                    return {
+                        name: name,
+                        seed: seed,
+                        originalName: player
+                    };
+                }).sort((a, b) => a.seed - b.seed); // Sort by seed
+            }
+        }
+        
+        function displayPlayers(seededPlayers) {
+            const playersList = document.getElementById('players-list');
+            
+            if (seededPlayers.length === 0) {
+                playersList.innerHTML = '<div class="loading-message">No players registered</div>';
+                return;
+            }
+            
+            const playersHTML = seededPlayers.map((player, index) => `
+                <div class="player-item">
+                    <div class="player-seed">${player.seed}</div>
+                    <div class="player-name">${player.name}</div>
+                    <div class="player-seed-badge">Seed ${player.seed}</div>
+                </div>
+            `).join('');
+            
+            playersList.innerHTML = playersHTML;
+        }
+        
+        function updateTournamentInfo(seededPlayers) {
+            const totalPlayers = seededPlayers.length;
+            document.getElementById('total-players').textContent = totalPlayers;
+            
+            // Calculate bracket structure
+            const bracketInfo = calculateBracketStructure(totalPlayers);
+            document.getElementById('total-rounds').textContent = bracketInfo.totalRounds;
+            document.getElementById('bye-slots').textContent = bracketInfo.totalBYEs;
+            document.getElementById('bracket-type').textContent = getBracketType(totalPlayers);
+            
+            // Generate bracket preview
+            generateBracketPreview(seededPlayers, bracketInfo);
+        }
+        
+        function calculateBracketStructure(playerCount) {
+            // Find next power of 2
+            const nextPowerOf2 = Math.pow(2, Math.ceil(Math.log2(playerCount)));
+            const totalBYEs = nextPowerOf2 - playerCount;
+            const totalSlots = nextPowerOf2;
+            const totalRounds = Math.log2(totalSlots);
+            
+            return {
+                totalBYEs,
+                totalSlots, 
+                totalRounds,
+                nextPowerOf2
+            };
+        }
+        
+        function getBracketType(playerCount) {
+            if (playerCount <= 2) return "Final";
+            if (playerCount <= 4) return "Semi-Finals";
+            if (playerCount <= 8) return "Quarter-Finals";
+            if (playerCount <= 16) return "Round of 16";
+            if (playerCount <= 32) return "Round of 32";
+            return "Single Elimination";
+        }
+        
+        function generateBracketPreview(seededPlayers, bracketInfo) {
+            const preview = document.getElementById('bracket-preview');
+            const totalPlayers = seededPlayers.length;
+            
+            let previewHTML = `<h4>🎯 Bracket Structure Preview</h4>`;
+            
+            if (bracketInfo.totalBYEs > 0) {
+                previewHTML += `
+                    <div class="bye-info">
+                        ⚡ ${bracketInfo.totalBYEs} BYE slot${bracketInfo.totalBYEs > 1 ? 's' : ''} will be added
+                    </div>
+                    <div class="seeding-advantage">
+                        🏆 Top ${bracketInfo.totalBYEs} seed${bracketInfo.totalBYEs > 1 ? 's' : ''} get BYE advantage${bracketInfo.totalBYEs > 1 ? 's' : ''}
+                    </div>
+                `;
+            }
+            
+            previewHTML += `
+                <div class="bracket-structure">
+                    <strong>${totalPlayers} players</strong> → <strong>${bracketInfo.totalSlots} bracket slots</strong><br>
+                    <strong>${bracketInfo.totalRounds} rounds</strong> of competition<br>
+                    <strong>First round:</strong> ${Math.floor(bracketInfo.totalSlots / 2)} matches
+                </div>
+            `;
+            
+            // Show seeding advantages
+            if (bracketInfo.totalBYEs > 0) {
+                previewHTML += `<div style="margin-top: 15px; font-size: 0.9em;">`;
+                previewHTML += `<strong>Seeding Advantages:</strong><br>`;
+                
+                for (let i = 0; i < Math.min(bracketInfo.totalBYEs, 3); i++) {
+                    previewHTML += `• ${seededPlayers[i].name} (Seed ${seededPlayers[i].seed}) gets BYE to round 2<br>`;
+                }
+                
+                if (bracketInfo.totalBYEs > 3) {
+                    previewHTML += `• ... and ${bracketInfo.totalBYEs - 3} more seed${bracketInfo.totalBYEs - 3 > 1 ? 's' : ''}<br>`;
+                }
+                
+                previewHTML += `</div>`;
+            }
+            
+            preview.innerHTML = previewHTML;
+        }
+        
+        function generateBracket() {
+            // Simply redirect to bracket page - players are already in sessionStorage
+            location.href = 'bracket.html';
+        }
+        
+        function showError(message) {
+            const playersList = document.getElementById('players-list');
+            playersList.innerHTML = `
+                <div style="text-align: center; color: #dc3545; padding: 20px;">
+                    <div style="font-size: 2em;">⚠️</div>
+                    <h3>${message}</h3>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

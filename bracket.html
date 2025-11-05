@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MatchPoint - Tournament Bracket</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .bracket-page {
+            min-height: 100vh;
+            background: #f4f4f9;
+            padding: 20px;
+        }
+        
+        .bracket-header {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .bracket-header h1 {
+            color: #333;
+            margin: 0;
+            font-size: 2em;
+        }
+        
+        .tournament-stats {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #007bff;
+        }
+        
+        .stat-label {
+            font-size: 0.8em;
+            color: #6c757d;
+        }
+        
+        .bracket-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        
+        button.primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        button.secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        #bracket-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            min-height: 500px;
+            overflow-x: auto;
+        }
+        
+        .loading-message {
+            text-align: center;
+            color: #666;
+            font-size: 1.2em;
+            padding: 40px;
+        }
+        
+        .bracket {
+            display: flex;
+            gap: 40px;
+            min-width: max-content;
+        }
+        
+        .round {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            min-width: 300px;
+        }
+        
+        .round-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #555;
+            text-align: center;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .bracket-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .bracket-actions {
+                justify-content: center;
+            }
+            
+            .tournament-stats {
+                justify-content: center;
+            }
+            
+            .bracket-header h1 {
+                font-size: 1.5em;
+            }
+            
+            #bracket-container {
+                padding: 15px;
+            }
+            
+            .bracket {
+                gap: 25px;
+            }
+            
+            .round {
+                min-width: 260px;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .bracket-page {
+                padding: 10px;
+            }
+            
+            .round {
+                min-width: 240px;
+            }
+            
+            button {
+                padding: 8px 16px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bracket-page">
+        <div class="bracket-header">
+            <div>
+                <h1>Tournament Bracket</h1>
+                <div class="tournament-stats">
+                    <div class="stat">
+                        <div class="stat-value" id="player-count">0</div>
+                        <div class="stat-label">Players</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="round-count">0</div>
+                        <div class="stat-label">Rounds</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="bye-count">0</div>
+                        <div class="stat-label">BYEs</div>
+                    </div>
+                </div>
+            </div>
+            <div class="bracket-actions">
+                <button onclick="location.href='setup.html'" class="secondary">← Back to Setup</button>
+                <button onclick="resetBracket()" class="secondary">Reset Bracket</button>
+                <button onclick="viewWinner()" class="secondary" id="view-winner-btn" style="display: none;">🏆 View Winner</button>
+                <button onclick="location.href='index.html'" class="secondary">New Tournament</button>
+            </div>
+        </div>
+
+        <div id="bracket-container">
+            <div class="loading-message" id="loading-message">
+                ⚡ Generating tournament bracket...
+            </div>
+        </div>
+
+        <div id="winner-section">
+            <!-- Winner announcement will appear here -->
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="bracket.js"></script>
+</body>
+</html>
